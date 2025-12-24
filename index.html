@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gata500 IA</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e1e1e, #2e7d32);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #chat {
+      background: #111;
+      width: 380px;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    h3 {
+      text-align: center;
+      margin-top: 0;
+    }
+    #messages {
+      height: 230px;
+      overflow-y: auto;
+      background: #000;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .user { color: #64b5f6; }
+    .bot { color: #81c784; }
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="chat">
+    <h3>🤖 Gata500</h3>
+    <div id="messages"></div>
+    <input id="input" placeholder="Escribí algo y presioná Enter" />
+  </div>
+
+  <script>
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
+
+    function addMessage(text, className) {
+      const p = document.createElement("p");
+      p.textContent = text;
+      p.className = className;
+      messages.appendChild(p);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    // Memoria simple (últimos mensajes)
+    const memoria = [];
+
+    // Respuestas normales
+    const respuestas = [
+      { keys: ["hola", "buenas"], reply: "Hola 😸 soy Gata500, ¿qué necesitás?" },
+      { keys: ["nombre"], reply: "Me llamo Gata500 🐱🤖" },
+      { keys: ["juego"], reply: "Puedo ayudarte a crear juegos 🎮" },
+      { keys: ["web", "pagina", "sitio"], reply: "Puedo ayudarte con páginas web 🌐" },
+      { keys: ["adios", "chau"], reply: "Chau 👋 volvé cuando quieras" }
+    ];
+
+    // Frases que indican algo obvio (no literal)
+    const patronesObvios = [
+      "el agua moja",
+      "el cielo es azul",
+      "el fuego quema",
+      "2+2",
+      "dos mas dos",
+      "todos lo saben",
+      "siempre fue asi",
+      "es asi"
+    ];
+
+    function respuestaIA(texto) {
+      texto = texto.toLowerCase();
+
+      // Detectar cosas obvias
+      for (let p of patronesObvios) {
+        if (texto.includes(p)) {
+          return "Nooo 😱 ¿en serio? Jajaja obvio 🙄";
+        }
+      }
+
+      // Respuestas normales
+      for (let r of respuestas) {
+        for (let k of r.keys) {
+          if (texto.includes(k)) {
+            return r.reply;
+          }
+        }
+      }
+
+      // Guardar en memoria
+      memoria.push(texto);
+      if (memoria.length > 5) memoria.shift();
+
+      return "Entendido 👍 Puedo ayudarte con casi todo 😎";
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && input.value.trim() !== "") {
+        const texto = input.value;
+        addMessage("Vos: " + texto, "user");
+        const r = respuestaIA(texto);
+        addMessage("Gata500: " + r, "bot");
+        input.value = "";
+      }
+    });
+
+    addMessage("Gata500: Hola 😸 estoy lista para ayudarte con todo", "bot");
+  </script>
+
+</body>
+</html>
